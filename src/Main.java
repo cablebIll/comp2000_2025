@@ -11,15 +11,17 @@ public class Main extends JFrame {
     }
 
     class Canvas extends JPanel {
+      Grid grid = new Grid();
       public Canvas() {
-        setPreferredSize(new Dimension(720, 720));
+        setPreferredSize(new Dimension(720, 720)); //set the canvas size in 720 x 720
       }
+
 
       @Override
       public void paint(Graphics g) {
-	g.setColor(java.awt.Color.BLACK);
-	g.drawRect(10, 10, 700, 700);
+        grid.paint(g, getMousePosition());
       }
+
     }
 
     private Main() {

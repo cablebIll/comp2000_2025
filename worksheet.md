@@ -18,6 +18,15 @@ COMP2000 2025
 
 Draw a 20 by 20 grid on a 720x720 window.  Each cell in the grid should be 35 pixels high and wide and the grid should be drawn 10 pixels off the top and left borders of the screen.  To do this, you should use the `Graphics` class from the Java libraries.  Be sure to consult the tips video for this task (it is a link in iLearn).  Without it, you will be very confused.
 
+public void paint(Graphics g) {
+	      g.setColor(java.awt.Color.BLACK);
+        for(int i = 10; i < 700; i += 35){	
+          for(int j = 10; j < 700; j += 35){
+            g.drawRect(i, j, 35, 35);
+          }
+        }
+      }
+
 # Task 4
 
 The "grid" has no identity - it is just drawn.  Later on we will need to do lots of things "with" this grid.  We will modify it and adjust it and ask it questions.  Our task here is to refactor the program to give this grid an identity.  We will create an object to represent the grid and will give that object its own `paint` method for drawing the grid.
