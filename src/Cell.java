@@ -10,8 +10,14 @@ public class Cell {
         this.y = y;
     }
 
-    public void paint(Graphics g){
-        g.setColor(Color.WHITE);
+    public void paint(Graphics g, Point MousePos){
+        if (MousePos.x >= x && 
+            MousePos.x <= x+35 && 
+            MousePos.y >= y && 
+            MousePos.y <= y+35){
+            g.setColor(Color.GRAY);
+        }
+        else {g.setColor(Color.WHITE);}
         g.fillRect(x, y, size, size);
         g.setColor(Color.BLACK);
         g.drawRect(x, y, size, size);

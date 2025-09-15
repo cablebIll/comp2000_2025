@@ -1,8 +1,5 @@
-import java.awt.Dimension;
-import java.awt.Graphics;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
 
 public class Main extends JFrame {
     public static void main(String[] args) throws Exception {
@@ -21,7 +18,8 @@ public class Main extends JFrame {
 
       @Override
       public void paint(Graphics g) {
-        grid.paint(g);
+        Point MousePos = getMousePosition();
+        grid.paint(g, MousePos);
       }
     }
 
