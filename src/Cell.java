@@ -5,13 +5,9 @@ import java.awt.Rectangle;
 
 public class Cell extends Rectangle {
   static int size = 35;
-  char col;
-  int row;
 
-  public Cell(char inCol, int inRow, int x, int y) {
+  public Cell(int x, int y) {
     super(x, y, size, size);
-    col = inCol;
-    row = inRow;
   }
 
   public void paint(Graphics g, Point mousePos) {
