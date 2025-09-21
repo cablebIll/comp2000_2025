@@ -29,4 +29,8 @@ public class Stage {
       g.drawString(String.valueOf(hoverCell.col) + String.valueOf(hoverCell.row), 740, 30);
     }
   }
+
+  public void handleInput(int keyCode) {
+    // TODO
+  }
 }
