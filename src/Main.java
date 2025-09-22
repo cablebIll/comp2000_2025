@@ -25,7 +25,7 @@ public class Main extends JFrame {
       @Override
       public void keyPressed(KeyEvent e) {
         System.out.print(e.getKeyCode());
-        //stage.handleInput(e.getKeyCode()); 
+        stage.handleInput(e.getKeyCode()); 
       }
 
       @Override

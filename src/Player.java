@@ -2,10 +2,15 @@ import java.awt.Color;
 import java.awt.Polygon;
 import java.util.ArrayList;
 
-public class Cat extends Actor {
-  public Cat(Cell inLoc) {
+public class Player extends Actor {
+  public Player(Cell inLoc) {
     loc = inLoc;
     color = Color.BLUE;
+    reDisplay();
+  }
+
+  @Override
+  public void reDisplay() {
     display = new ArrayList<Polygon>();
     Polygon ear1 = new Polygon();
     ear1.addPoint(loc.x + 11, loc.y + 5);

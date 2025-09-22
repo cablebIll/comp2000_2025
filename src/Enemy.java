@@ -24,4 +24,9 @@ public class Dog extends Actor {
     display.add(ear1);
     display.add(ear2);
   }
+
+  @Override
+  public void reDisplay() {
+	throw new UnsupportedOperationException("Unimplemented method 'reDisplay'");
+  }
 }
