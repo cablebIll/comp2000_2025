@@ -105,4 +105,9 @@ public class Stage {
     }
     items.removeAll(itemsToRemove);
   }
+  public void update() {
+  for (Enemy enemy : enemies) {
+    enemy.update(grid);
+  }
+}
 }

@@ -55,12 +55,14 @@ public class Main extends JFrame {
     }
 
     public void run() {
-      Timer timer = new Timer(1000 / 60, new ActionListener() {
+  Timer timer = new Timer(1000 / 60, new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-      repaint();
+      ((Canvas) getContentPane().getComponent(0)).stage.update();
+      getContentPane().getComponent(0).repaint();
+
     }
   });
   timer.start();
-    }
+}
 }
