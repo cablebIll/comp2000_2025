@@ -1,7 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Item extends GameObject {
+public abstract class Item extends GameObject {
+  protected Color color;
 
   public Item(Cell inLoc) {
     this.loc = inLoc;
@@ -9,8 +10,11 @@ public class Item extends GameObject {
 
   @Override
   public void paint(Graphics g) {
-    g.setColor(Color.RED);
-    int offset = 5;
-    g.fillOval(loc.x + offset, loc.y + offset, Cell.size - (2 * offset), Cell.size - (2 * offset));
-  }
+  int offset = 5;
+  g.setColor(this.color); 
+  g.fillOval(loc.x + offset, loc.y + offset, Cell.size - (2 * offset), Cell.size - (2 * offset));
+  
+  g.setColor(Color.BLACK);
+  g.drawOval(loc.x + offset, loc.y + offset, Cell.size - (2 * offset), Cell.size - (2 * offset));
+    }
 }

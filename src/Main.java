@@ -7,6 +7,10 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class Main extends JFrame {
     public static void main(String[] args) throws Exception {
       Main window = new Main();
@@ -51,8 +55,12 @@ public class Main extends JFrame {
     }
 
     public void run() {
-      while(true) {
-        repaint();
-      }
+      Timer timer = new Timer(1000 / 60, new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      repaint();
+    }
+  });
+  timer.start();
     }
 }

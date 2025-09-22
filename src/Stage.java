@@ -8,23 +8,37 @@ import java.util.Optional;
 
 public class Stage {
   Grid grid;
-  List<GameObject> gameObjects;
+  Player player;
+  List<Enemy> enemies;
+  List<Item> items;
 
   public Stage() {
     grid = new Grid();
-    gameObjects = new ArrayList<GameObject>();
+    enemies = new ArrayList<>();
+    items = new ArrayList<>();
+
+    player = new Player(grid.cellAtColRow('A', 0).get());
+
+    enemies.add(new Enemy(grid.cellAtColRow('P', 0).get()));
+    enemies.add(new Enemy(grid.cellAtColRow('J', 12).get()));
     
-    gameObjects.add(new Player(grid.cellAtColRow('A', 0).get()));
-    gameObjects.add(new Dog(grid.cellAtColRow('P', 0).get()));
-    gameObjects.add(new Dog(grid.cellAtColRow('J', 12).get()));
-    gameObjects.add(new Item(grid.cellAtColRow('F', 5).get()));
+    items.add(new Objective(grid.cellAtColRow('F', 5).get()));
+    items.add(new PowerUp(grid.cellAtColRow('K', 10).get()));
   }
 
   public void paint(Graphics g, Point mouseLoc) {
     grid.paint(g, mouseLoc);
-    for (GameObject obj : gameObjects) {
-      obj.paint(g);
+    
+    for (Item item : items) {
+      item.paint(g);
     }
+
+    for (Enemy enemy : enemies) {
+      enemy.paint(g);
+    }
+
+    player.paint(g);
+    
     Optional<Cell> underMouse = grid.cellAtPoint(mouseLoc);
     if (underMouse.isPresent()) {
       Cell hoverCell = underMouse.get();
@@ -34,7 +48,6 @@ public class Stage {
   }
 
   public void handleInput(int keyCode) {
-    Player player = (Player) gameObjects.get(0);
     Cell currentLoc = player.loc;
     char newCol = currentLoc.col;
     int newRow = currentLoc.row;
@@ -67,6 +80,29 @@ public class Stage {
 
     if (targetCell.isPresent()) {
       player.updateLoc(targetCell.get());
+      checkForInteractions();
     }
+  }
+  
+  private void checkForInteractions() {
+    for (Enemy enemy : enemies) {
+      if (player.loc == enemy.loc) {
+        System.out.println("Collided with an enemy!");
+      }
+    }
+
+    List<Item> itemsToRemove = new ArrayList<>();
+    for (Item item : items) {
+      if (player.loc == item.loc) {
+        if (item instanceof Objective) {
+          System.out.println("Objective collected!");
+          itemsToRemove.add(item);
+        } else if (item instanceof PowerUp) {
+          System.out.println("PowerUp collected!");
+          itemsToRemove.add(item);
+        }
+      }
+    }
+    items.removeAll(itemsToRemove);
   }
 }
