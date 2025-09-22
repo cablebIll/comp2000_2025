@@ -5,17 +5,24 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class Stage {
   Grid grid;
   Player player;
   List<Enemy> enemies;
   List<Item> items;
+  private int score;
+  private Random rand = new Random();
+  private int freezeTimer;
+  private boolean gameOver;
 
   public Stage() {
     grid = new Grid();
     enemies = new ArrayList<>();
     items = new ArrayList<>();
+    score = 0;
+    gameOver = false;
 
     player = new Player(grid.cellAtColRow('A', 0).get());
 
@@ -38,6 +45,11 @@ public class Stage {
     }
 
     player.paint(g);
+
+    g.drawString("Score: " + score, 740, 60);
+    if (gameOver){
+      g.drawString("Game Over, final score: " + score, 740, 100);
+    }
     
     Optional<Cell> underMouse = grid.cellAtPoint(mouseLoc);
     if (underMouse.isPresent()) {
@@ -48,6 +60,7 @@ public class Stage {
   }
 
   public void handleInput(int keyCode) {
+    if (gameOver){return;}
     Cell currentLoc = player.loc;
     char newCol = currentLoc.col;
     int newRow = currentLoc.row;
@@ -85,29 +98,79 @@ public class Stage {
   }
   
   private void checkForInteractions() {
-    for (Enemy enemy : enemies) {
-      if (player.loc == enemy.loc) {
-        System.out.println("Collided with an enemy!");
-      }
-    }
-
-    List<Item> itemsToRemove = new ArrayList<>();
-    for (Item item : items) {
-      if (player.loc == item.loc) {
-        if (item instanceof Objective) {
-          System.out.println("Objective collected!");
-          itemsToRemove.add(item);
-        } else if (item instanceof PowerUp) {
-          System.out.println("PowerUp collected!");
-          itemsToRemove.add(item);
-        }
-      }
-    }
-    items.removeAll(itemsToRemove);
-  }
-  public void update() {
   for (Enemy enemy : enemies) {
-    enemy.update(grid);
+    if (player.loc == enemy.loc) {
+      gameOver = true;
+    }
   }
+
+  List<Item> itemsToRemove = new ArrayList<>();
+  int objectivesToSpawn = 0;
+
+  for (Item item : items) {
+    if (player.loc == item.loc) {
+      if (item instanceof Objective) {
+        itemsToRemove.add(item);
+        score++;
+        spawnEnemy();
+        objectivesToSpawn++;
+      } else if (item instanceof PowerUp) {
+        freezeTimer = 300;
+        itemsToRemove.add(item);
+      }
+    }
+  }
+
+  items.removeAll(itemsToRemove);
+
+  for (int i = 0; i < objectivesToSpawn; i++) {
+    spawnObjective();
+  }
+}
+  
+  private Cell findEmptyCell() {
+  Cell emptyCell;
+  do {
+    int randCol = rand.nextInt(grid.cells.length);
+    int randRow = rand.nextInt(grid.cells[0].length);
+    emptyCell = grid.cellAtColRow(randCol, randRow).get();
+  } while (isCellOccupied(emptyCell));
+  return emptyCell;
+}
+
+private void spawnEnemy() {
+  Cell spawnCell = findEmptyCell();
+  enemies.add(new Enemy(spawnCell));
+}
+
+private void spawnObjective() {
+  Cell spawnCell = findEmptyCell();
+  items.add(new Objective(spawnCell));
+}
+
+private boolean isCellOccupied(Cell cell) {
+  if (player.loc == cell) {
+    return true;
+  }
+  for (Enemy enemy : enemies) {
+    if (enemy.loc == cell) {
+      return true;
+    }
+  }
+  for (Item item : items) {
+    if (item.loc == cell) {
+      return true;
+    }
+  }
+  return false;
+}
+
+  public void update() {
+    if (!gameOver){
+    if (freezeTimer <= 0){
+    for (Enemy enemy : enemies) {
+      enemy.update(grid);
+  }}}
+  if (freezeTimer > 0) { freezeTimer--; }
 }
 }
