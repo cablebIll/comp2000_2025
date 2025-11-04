@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Stage {
+public class Stage implements Observer {
   Grid grid;
   Player player;
   List<Enemy> enemies;
@@ -16,6 +17,7 @@ public class Stage {
   private Random rand = new Random();
   private int freezeTimer;
   private boolean gameOver;
+  private final ConcurrentLinkedQueue<WeatherData> weatherDataQueue = new ConcurrentLinkedQueue<>();
 
   public Stage() {
     grid = new Grid();
@@ -167,10 +169,50 @@ private boolean isCellOccupied(Cell cell) {
 
   public void update() {
     if (!gameOver){
-    if (freezeTimer <= 0){
-    for (Enemy enemy : enemies) {
-      enemy.update(grid);
-  }}}
-  if (freezeTimer > 0) { freezeTimer--; }
-}
+      if (freezeTimer <= 0){
+        for (Enemy enemy : enemies) {
+          enemy.update(grid);
+        }
+      }
+    }
+    if (freezeTimer > 0) {
+      freezeTimer--;
+    }
+    updateCellWeatherEffects();
+    processWeatherData();
+  }
+
+  private void updateCellWeatherEffects() {
+    final double FADE_RATE = 0.001;
+
+    grid.stream().forEach(cell -> {
+      if (cell.getTemperature() > 0) { 
+        cell.setTemperature(Math.max(0.0, cell.getTemperature() - FADE_RATE));
+      }
+    });
+  }
+
+  private void processWeatherData() {
+    WeatherData data;
+    while ((data = weatherDataQueue.poll()) != null) {
+      final WeatherData currentData = data;
+      int gridCols = grid.cells.length;
+      int gridRows = grid.cells[0].length;
+      int col = currentData.getX() + gridCols / 2;
+      int row = currentData.getY() + gridRows / 2;
+
+      grid.cellAtColRow(col, row).ifPresent(cell -> {
+        switch (currentData.getAttribute()) {
+          case "temp":
+            cell.setTemperature(currentData.getValue());
+            break;
+        }
+      });
+    }
+  }
+
+  @Override
+  public void update(WeatherData data) {
+    weatherDataQueue.add(data);
+  }
 }

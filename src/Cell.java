@@ -7,6 +7,8 @@ public class Cell extends Rectangle {
   static int size = 35;
   char col;
   int row;
+  
+  private double temperature = 0.0;
 
   public Cell(char inCol, int inRow, int x, int y) {
     super(x, y, size, size);
@@ -31,5 +33,13 @@ public class Cell extends Rectangle {
     } else {
       return false;
     }
+  }
+
+  public double getTemperature() {
+    return temperature;
+  }
+
+  public void setTemperature(double temperature) {
+    this.temperature = temperature;
   }
 }

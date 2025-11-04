@@ -10,6 +10,7 @@ import javax.swing.Timer;
 
 public class Main extends JFrame {
   private final Canvas canvas;
+  private final WeatherService weatherService;
 
   public static void main(String[] args) throws Exception {
     Main window = new Main();
@@ -52,9 +53,14 @@ public class Main extends JFrame {
     this.setContentPane(canvas);
     this.pack();
     this.setVisible(true);
+
+    this.weatherService = new WeatherService();
+    weatherService.registerObserver(canvas.stage);
   }
 
   public void run() {
+    weatherService.start();
+
     Timer timer = new Timer(1000 / 60, new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
